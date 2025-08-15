@@ -1,0 +1,8 @@
+streamlit>=1.28.0
+torch>=2.7.1
+tensorkrowch>=1.1.6
+numpy>=2.1.3
+pandas>=2.0.0
+matplotlib>=3.7.0
+networkx>=3.1
+ipython>=8.0.0
