@@ -1,6 +1,6 @@
 # 🧭 Tensor Network TSP Solver
 
-A quantum-inspired algorithm for solving the Traveling Salesman Problem (TSP) using tensor networks, implemented with an interactive Streamlit web application.
+Implementation of the quantum-inspired algorithm for solving the Traveling Salesman Problem (TSP) using tensor networks.
 
 ![TSP Visualization](TSP_Nodes.png)
 
@@ -59,12 +59,11 @@ Extracts the optimal route from the quantum state through projection and partial
 
 ### Key Parameters:
 - **τ (Tau)**: Controls optimization intensity. Higher values favor shorter routes but risk numerical overflow
-- **Restriction Layers**: Number of constraint layers. n-1 layers make the solver exact
-- **Bond Dimension**: Controls accuracy vs computational cost trade-off
+- **Number of Restriction Layers**: Number of constraint layers. n-1 layers make the solver exact
 
 ## 🖥️ Streamlit Web Application
 
-An interactive web interface that makes the quantum TSP solver accessible to everyone.
+An interactive web interface that makes the quantum TSP solver accessible to everyone. Available in [https://tsp-with-tensor-networks.streamlit.app/](https://tsp-with-tensor-networks.streamlit.app/)
 
 ### ✨ Features
 
@@ -72,7 +71,6 @@ An interactive web interface that makes the quantum TSP solver accessible to eve
 - **Manual Entry**: Interactive distance matrix editor
 - **File Import**: Support for CSV and JSON formats with automatic size detection
 - **Random Generation**: Create test problems with configurable parameters
-- **Problem Validation**: Real-time checks for matrix completeness
 
 #### 🎛️ Algorithm Controls
 - **City Count**: Configure problem size (5-40 cities)
@@ -85,22 +83,12 @@ An interactive web interface that makes the quantum TSP solver accessible to eve
 - **Step-by-Step Route**: Detailed path breakdown with distances
 - **Solution Export**: Download results as JSON with complete metadata
 
-#### 💡 User Guidance
-- **Real-time Tips**: Context-aware troubleshooting suggestions
-- **Parameter Help**: Detailed explanations for algorithm settings
-- **Example Files**: Pre-configured test cases for learning
-
-### 🎨 Interface Highlights
-- **Responsive Design**: Works on desktop and mobile devices
-- **Dark Theme Support**: Modern, professional appearance
-- **Real-time Feedback**: Instant validation and status updates
-- **Progressive Disclosure**: Advanced options available when needed
 
 ## 🚀 Installation & Usage
 
 ### Prerequisites
 ```bash
-Python 3.11 or higher
+Python 3.12 or higher
 ```
 
 ### Install Dependencies
@@ -149,26 +137,6 @@ TSP/
 └── 📂 example_*.{csv,json}      # Sample input files
 ```
 
-## 🔬 Technical Implementation
-
-### Core Components
-
-#### Tensor Network Construction
-- **Superposition Layer**: Creates uniform distribution over all possible routes
-- **Evolution Layer**: MPO tensors implementing imaginary time evolution
-- **Restriction Layer**: Enforces TSP constraints through projection operators
-- **Contraction**: Efficient tensor network contraction for solution extraction
-
-#### Optimization Features
-- **Template Tensors**: Memory-efficient implementation using shared tensor templates
-- **Progressive Refinement**: Iterative improvement through multiple restriction layers
-- **Numerical Stability**: Automatic overflow detection and parameter adjustment
-
-#### Performance Optimizations
-- **Bond Dimension Control**: Adaptive truncation for computational efficiency
-- **Parallel Processing**: Vectorized operations using PyTorch
-- **Memory Management**: Efficient tensor storage and manipulation
-
 ### Supported Input Formats
 
 #### CSV Format
@@ -193,63 +161,6 @@ City 2,15,20,0
 }
 ```
 
-## 📊 Algorithm Performance
-
-### Complexity Analysis
-- **Time Complexity**: O(n² × 2^n × D²) where D is bond dimension
-- **Space Complexity**: O(n × D²)
-- **Approximation Quality**: Controllable through restriction layers and bond dimension
-
-### Scalability
-- **Small Problems** (≤10 cities): Exact solutions possible
-- **Medium Problems** (10-25 cities): High-quality approximations
-- **Large Problems** (25+ cities): Heuristic solutions with adjustable quality
-
-### Benchmarking
-The algorithm provides competitive results compared to classical methods while offering unique quantum-inspired advantages in exploration of solution space.
-
-## 🛠️ Configuration Options
-
-### Algorithm Parameters
-| Parameter | Range | Description | Impact |
-|-----------|-------|-------------|---------|
-| τ (tau) | 0.1-10.0 | Evolution strength | Higher = prefer shorter routes |
-| Layers | 1 to n-1 | Restriction layers | More = better constraints |
-| Bond Dim | Auto | Tensor bond dimension | Higher = more accuracy |
-
-### Problem Parameters  
-| Parameter | Range | Description |
-|-----------|-------|-------------|
-| Cities | 5-40 | Problem size |
-| Connections | 2 to n-1 | Max connections per city |
-| Distance Range | 1-100 | Random distance bounds |
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-**Sequential Solution (0,1,2,3...)**
-- Solution: Reduce τ value
-- Cause: Evolution too strong, favoring trivial path
-
-**Repeated Cities in Solution**  
-- Solution: Increase restriction layers
-- Cause: Insufficient constraint enforcement
-
-**Numerical Overflow**
-- Solution: Reduce τ parameter
-- Cause: Exponential evolution terms too large
-
-**Slow Performance**
-- Solution: Reduce problem size or layers
-- Cause: Exponential scaling with problem size
-
-### Performance Tips
-- Start with small problems (5-7 cities) to understand behavior
-- τ = 1.0 is usually a good starting point
-- More layers = better quality but slower speed
-- Symmetric distance matrices generally work better
-
 ## 📚 References & Citation
 
 If you use this software in your research, please cite the original paper:
@@ -268,7 +179,6 @@ If you use this software in your research, please cite the original paper:
 ## 📞 Contact & Support
 
 **Author:** Alejandro Mata Ali  
-**Institution:** [Based on paper affiliations]
 
 For questions about the algorithm or implementation, please refer to the original paper or create an issue in this repository.
 
@@ -278,4 +188,3 @@ Please refer to the original paper for licensing information regarding the algor
 
 ---
 
-*This implementation brings cutting-edge quantum-inspired optimization to your fingertips through an intuitive web interface. Explore the fascinating world of tensor networks and quantum computing applied to classical optimization problems!* 🚀✨
