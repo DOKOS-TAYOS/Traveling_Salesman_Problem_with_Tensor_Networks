@@ -17,9 +17,8 @@ This project implements a novel quantum-inspired algorithm for solving the Trave
 The TSP is one of the most famous optimization challenges in computer science. Given a set of cities and distances between them, the goal is to find the shortest possible route that visits each city exactly once and returns to the starting city.
 
 **Mathematical Formulation:**
-```
-Minimize: C(x⃗) = Σ(t=0 to n-1) T[x_t, x_{t+1}]
-```
+Minimize: 
+$$C(\vec{x}) = \sum_{t=0}^{n-1} T_{x_t, x_{t+1}}$$
 Where:
 - `x_t` is the city visited at time step t
 - `T[i,j]` is the distance between cities i and j  
@@ -187,4 +186,5 @@ For questions about the algorithm or implementation, please refer to the origina
 Please refer to the original paper for licensing information regarding the algorithm. The Streamlit implementation follows standard open-source practices.
 
 ---
+
 
