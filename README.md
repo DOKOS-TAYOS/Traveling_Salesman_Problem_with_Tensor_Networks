@@ -313,7 +313,7 @@ If you use this software in your research, please cite the original paper:
 ## 📞 Contact & Support
 
 **Author:** Alejandro Mata Ali  
-**Institution:** [Based on paper affiliations]
+**Institution:** Instituto Tecnológico de Castilla y León, ITCL, Burgos, Spain
 
 For questions about the algorithm or implementation, please refer to the original paper or create an issue in this repository.
 
