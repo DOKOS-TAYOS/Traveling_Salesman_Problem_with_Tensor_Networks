@@ -1,0 +1,10 @@
+pytest
+numpy
+scipy
+ortools
+psutil
+networkx
+matplotlib
+pandas
+ruff
+python-tsp
