@@ -456,7 +456,7 @@ def parse_args() -> argparse.Namespace:
         "--tau-grid",
         type=float,
         nargs="+",
-        default=[float(tau) for tau in range(1, 21)],
+        default=[float(tau) for tau in range(1, 41)],
         help="First-stage coarse tau grid.",
     )
     parser.add_argument("--refinement-step", type=float, default=0.2)

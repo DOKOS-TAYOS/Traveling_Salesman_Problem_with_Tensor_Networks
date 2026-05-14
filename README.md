@@ -314,7 +314,7 @@ python -m benchmarks.calibrate_tau \
 Tau calibration uses only calibration seeds. The default calibration is
 two-stage:
 
-1. test integer `tau` values from 1 to 20;
+1. test integer `tau` values from 1 to 40;
 2. refine around the best first-stage value with step 0.2, using up to 10
    values below and 10 above.
 
@@ -384,12 +384,12 @@ Publication-style figures:
 ```bash
 python -m benchmarks.paper_figures \
     --out-dir reports/paper_figures \
-    --tau-schedule results/tau_schedule_paper_full.csv \
-    --tau-calibration results/tau_calibration_paper_full.csv \
+    --tau-schedule results/tau_schedule_tau1_40.csv \
+    --tau-calibration results/tau_calibration_tau1_40.csv \
     --small-exact-tau1 results/tsp_small_exact_tau1_paper_full.csv \
-    --small-exact-calibrated results/tsp_small_exact_paper_full.csv \
-    --classical-comparison results/classical_comparison_paper_full.csv \
-    --layer-ablation results/layer_ablation_paper_full.csv
+    --small-exact-calibrated results/tsp_small_exact_tau1_40.csv \
+    --classical-comparison results/classical_comparison_tau1_40.csv \
+    --layer-ablation results/layer_ablation_tau1_40.csv
 ```
 
 Paper-ready figures are written as both PDF and PNG:
@@ -405,13 +405,13 @@ Paper-ready figures are written as both PDF and PNG:
 The repository may include the following precomputed benchmark outputs:
 
 ```text
-results/tau_calibration_paper_full.csv
-results/tau_schedule_paper_full.csv
+results/tau_calibration_tau1_40.csv
+results/tau_schedule_tau1_40.csv
 results/tsp_small_exact_tau1_paper_full.csv
-results/tsp_small_exact_paper_full.csv
-results/classical_comparison_paper_full.csv
-results/layer_ablation_paper_full.csv
-results/layer_ablation_summary_paper_full.csv
+results/tsp_small_exact_tau1_40.csv
+results/classical_comparison_tau1_40.csv
+results/layer_ablation_tau1_40.csv
+results/layer_ablation_summary_tau1_40.csv
 ```
 
 These are generated from disjoint calibration and evaluation splits. They are
