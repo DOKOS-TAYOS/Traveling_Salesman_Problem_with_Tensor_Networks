@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Iterable
+from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
@@ -26,6 +27,16 @@ SOLVER_LABELS = {
     "networkx_greedy": "NetworkX greedy",
     "tn_exact": "TN calibrated",
 }
+
+
+@dataclass(frozen=True)
+class PaperFigureInputs:
+    tau_schedule: Path
+    tau_calibration: Path
+    small_exact_tau1: Path
+    small_exact_calibrated: Path
+    classical_comparison: Path
+    layer_ablation: Path
 
 
 def prepare_result_frame(frame: pd.DataFrame) -> pd.DataFrame:
@@ -237,6 +248,17 @@ def make_paper_figures(
     out_dir: Path,
 ) -> list[Path]:
     """Create publication-style figures from the fine-calibrated benchmark CSVs."""
+    current_inputs = PaperFigureInputs(
+        tau_schedule=results_dir / "tau_schedule_run.csv",
+        tau_calibration=results_dir / "tau_calibration_run.csv",
+        small_exact_tau1=results_dir / "tsp_small_exact_tau1_run.csv",
+        small_exact_calibrated=results_dir / "tsp_small_exact_run.csv",
+        classical_comparison=results_dir / "classical_comparison_run.csv",
+        layer_ablation=results_dir / "layer_ablation_run.csv",
+    )
+    if _all_inputs_exist(current_inputs):
+        return make_paper_figures_from_inputs(current_inputs, out_dir)
+
     out_dir.mkdir(parents=True, exist_ok=True)
     tau_by_size = pd.read_csv(results_dir / "tau_by_size_fine.csv")
     tau_sweep = prepare_result_frame(pd.read_csv(results_dir / "tau_sweep_fine.csv"))
@@ -270,6 +292,50 @@ def make_paper_figures(
     written.extend(_save_solver_comparison(classical_fine, out_dir))
     written.extend(_save_layer_ablation(layer_fine, out_dir))
     return written
+
+
+def make_paper_figures_from_inputs(
+    inputs: PaperFigureInputs,
+    out_dir: Path,
+) -> list[Path]:
+    """Create paper-style figures from explicit benchmark CSV paths."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    tau_schedule = pd.read_csv(inputs.tau_schedule)
+    tau_calibration = prepare_result_frame(pd.read_csv(inputs.tau_calibration))
+    small_tau_1 = prepare_result_frame(pd.read_csv(inputs.small_exact_tau1))
+    small_calibrated = prepare_result_frame(pd.read_csv(inputs.small_exact_calibrated))
+    classical = prepare_result_frame(pd.read_csv(inputs.classical_comparison))
+    layer = prepare_result_frame(pd.read_csv(inputs.layer_ablation))
+
+    written: list[Path] = []
+    written.extend(_save_tau_schedule(tau_schedule, out_dir))
+    written.extend(_save_tau_optimal_rate(tau_calibration, out_dir))
+    written.extend(
+        _save_quality_comparison(
+            {
+                r"$\tau=1$": small_tau_1,
+                "calibrated": small_calibrated,
+            },
+            out_dir,
+        )
+    )
+    written.extend(_save_solver_comparison(classical, out_dir))
+    written.extend(_save_layer_ablation(layer, out_dir))
+    return written
+
+
+def _all_inputs_exist(inputs: PaperFigureInputs) -> bool:
+    return all(
+        path.exists()
+        for path in (
+            inputs.tau_schedule,
+            inputs.tau_calibration,
+            inputs.small_exact_tau1,
+            inputs.small_exact_calibrated,
+            inputs.classical_comparison,
+            inputs.layer_ablation,
+        )
+    )
 
 
 def _save_tau_schedule(frame: pd.DataFrame, out_dir: Path) -> list[Path]:
@@ -459,12 +525,43 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--results-dir", type=Path, default=Path("results"))
     parser.add_argument("--out-dir", type=Path, default=Path("reports/paper_figures"))
+    parser.add_argument("--tau-schedule", type=Path, default=None)
+    parser.add_argument("--tau-calibration", type=Path, default=None)
+    parser.add_argument("--small-exact-tau1", type=Path, default=None)
+    parser.add_argument("--small-exact-calibrated", type=Path, default=None)
+    parser.add_argument("--classical-comparison", type=Path, default=None)
+    parser.add_argument("--layer-ablation", type=Path, default=None)
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    written = make_paper_figures(args.results_dir, args.out_dir)
+    explicit_paths = [
+        args.tau_schedule,
+        args.tau_calibration,
+        args.small_exact_tau1,
+        args.small_exact_calibrated,
+        args.classical_comparison,
+        args.layer_ablation,
+    ]
+    if any(path is not None for path in explicit_paths):
+        if not all(path is not None for path in explicit_paths):
+            raise SystemExit(
+                "When passing explicit CSV paths, provide all six paper input files."
+            )
+        written = make_paper_figures_from_inputs(
+            PaperFigureInputs(
+                tau_schedule=cast(Path, args.tau_schedule),
+                tau_calibration=cast(Path, args.tau_calibration),
+                small_exact_tau1=cast(Path, args.small_exact_tau1),
+                small_exact_calibrated=cast(Path, args.small_exact_calibrated),
+                classical_comparison=cast(Path, args.classical_comparison),
+                layer_ablation=cast(Path, args.layer_ablation),
+            ),
+            args.out_dir,
+        )
+    else:
+        written = make_paper_figures(args.results_dir, args.out_dir)
     print(f"Wrote {len(written)} paper figure files to {args.out_dir}")
 
 

@@ -60,6 +60,11 @@ def solve_tsp_tn(
     metadata: dict[str, Any] = {
         "tau": tau,
         "n_layers": n_layers,
+        "max_layers": max(original_distances.shape[0] - 2, 0),
+        "n_layers_effective": max(original_distances.shape[0] - 2, 0)
+        if n_layers is None
+        else n_layers,
+        "exact_mode": n_layers is None,
         "normalize": normalize,
         "normalization_factor": normalization_factor,
         "seed": seed,

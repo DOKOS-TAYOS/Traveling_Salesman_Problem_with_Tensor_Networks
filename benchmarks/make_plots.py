@@ -12,6 +12,8 @@ from typing import cast
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from benchmarks.config import DEFAULT_CALIBRATION_SEEDS, DEFAULT_EVALUATION_SEEDS
+
 BENCHMARK_WARNING = (
     "These benchmarks validate correctness and behavior on small/synthetic TSP "
     "instances; they do not claim computational advantage."
@@ -36,7 +38,12 @@ def _numeric_column(frame: pd.DataFrame, column: str) -> pd.Series:
 
 
 def _save_runtime_vs_n(frame: pd.DataFrame, out_dir: Path) -> None:
-    if frame.empty or "runtime_s" not in frame or "n" not in frame:
+    if (
+        frame.empty
+        or "runtime_s" not in frame
+        or "n" not in frame
+        or "solver" not in frame
+    ):
         return
     plot_frame = frame.copy()
     plot_frame["runtime_s"] = _numeric_column(plot_frame, "runtime_s")
@@ -64,7 +71,7 @@ def _save_runtime_vs_n(frame: pd.DataFrame, out_dir: Path) -> None:
 
 
 def _save_gap_vs_n(frame: pd.DataFrame, out_dir: Path) -> None:
-    if frame.empty or "n" not in frame:
+    if frame.empty or "n" not in frame or "solver" not in frame:
         return
     plot_frame = frame.copy()
     gap = _numeric_column(plot_frame, "relative_gap")
@@ -252,12 +259,21 @@ def _dependency_version(package: str) -> str:
 
 def _write_summary(frame: pd.DataFrame, reports_dir: Path, results_dir: Path) -> None:
     now = datetime.now().astimezone().isoformat(timespec="seconds")
+    tau_schedule_paths = sorted(results_dir.glob("*tau_schedule*.csv"))
     lines = [
         "# Benchmark Summary",
         "",
         f"Generated at: {now}",
         f"Python: {platform.python_version()}",
         f"Platform: {platform.platform()}",
+        f"Calibration seeds: {DEFAULT_CALIBRATION_SEEDS}",
+        f"Evaluation seeds: {DEFAULT_EVALUATION_SEEDS}",
+        "Tau schedule: "
+        + (
+            ", ".join(path.as_posix() for path in tau_schedule_paths)
+            if tau_schedule_paths
+            else "not found in results directory"
+        ),
         "",
         "## Relevant Dependencies",
         "",
@@ -279,9 +295,10 @@ def _write_summary(frame: pd.DataFrame, reports_dir: Path, results_dir: Path) ->
             "",
             "## Commands",
             "",
-            "- `python -m benchmarks.run_tau_sweep ...`",
-            "- `python -m benchmarks.run_tsp_benchmarks --suite small_exact ...`",
-            "- `python -m benchmarks.run_layer_ablation ...`",
+            "- `python -m benchmarks.calibrate_tau --out results/tau_calibration.csv --seeds 0 1 2 3 4 --sizes 5 6 7 8 9 10`",
+            "- `python -m benchmarks.run_tsp_benchmarks --suite small_exact --out results/tsp_small_exact.csv --seeds 5 6 7 8 9 --tau-schedule results/tau_schedule.csv --sizes 5 6 7 8 9 10`",
+            "- `python -m benchmarks.run_tsp_benchmarks --suite classical_comparison --out results/classical_comparison.csv --seeds 5 6 7 8 9 --tau-schedule results/tau_schedule.csv --sizes 5 6 7 8 9 10 12 14 16`",
+            "- `python -m benchmarks.run_layer_ablation --out results/layer_ablation.csv --seeds 5 6 7 8 9 --tau-schedule results/tau_schedule.csv --sizes 8 10 12 --layer-ratios 0.0 0.1 0.25 0.5 0.75 1.0 --repeats 25`",
             "- `python -m benchmarks.make_plots --results-dir results --out-dir reports/figures`",
             "",
             "## Result Files",
