@@ -25,8 +25,16 @@ SOLVER_LABELS = {
     "held_karp": "Held-Karp",
     "ortools": "OR-Tools",
     "networkx_greedy": "NetworkX greedy",
+    "networkx_simulated_annealing": "NetworkX SA",
     "tn_exact": "TN calibrated",
 }
+PAPER_SOLVER_COMPARISON_SOLVERS = [
+    "held_karp",
+    "ortools",
+    "networkx_greedy",
+    "networkx_simulated_annealing",
+    "tn_exact",
+]
 
 
 @dataclass(frozen=True)
@@ -406,7 +414,7 @@ def _save_quality_comparison(
 def _save_solver_comparison(frame: pd.DataFrame, out_dir: Path) -> list[Path]:
     summary = solver_comparison_by_size_summary(
         frame,
-        solvers=["held_karp", "ortools", "networkx_greedy", "tn_exact"],
+        solvers=PAPER_SOLVER_COMPARISON_SOLVERS,
     )
     fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.9), sharex=True)
     for _solver, solver_frame in summary.groupby("solver", sort=False):
