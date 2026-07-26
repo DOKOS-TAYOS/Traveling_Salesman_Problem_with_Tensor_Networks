@@ -503,4 +503,9 @@ or open an issue in this repository.
 
 ## License
 
-See the repository license file.
+This project is licensed under the [MIT License](LICENSE).
+
+`auxiliary_solver.py` includes code derived from Google's [OR-Tools TSP
+tutorial](https://developers.google.com/optimization/routing/tsp), which is
+licensed under Apache-2.0. See [THIRD_PARTY.md](THIRD_PARTY.md) for that
+attribution and notices for the main Python dependencies.
